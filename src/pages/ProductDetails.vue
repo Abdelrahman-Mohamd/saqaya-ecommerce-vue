@@ -1,0 +1,3 @@
+<template>
+  <div class="product-details">product details</div>
+</template>
