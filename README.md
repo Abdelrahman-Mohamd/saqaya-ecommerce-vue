@@ -1,5 +1,80 @@
-# Vue 3 + TypeScript + Vite
+# 🛍️ SAQAYA E-Commerce App
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is a Vue.js-based E-Commerce web application developed during my **frontend internship at SAQAYA**. The project is designed to simulate a real-world online store while applying modern frontend practices and tooling.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+> ✅ Starting with the **Options API** and gradually migrating to the **Composition API**, this project also features **unit testing with Jest** and follows the **BEM (Block Element Modifier)** methodology for scalable and maintainable styling.
+
+---
+
+## 🚀 Tech Stack
+
+- **Vue 3**
+- **Vue Router**
+- **Jest** (for unit testing)
+- **BEM** (styling methodology)
+- **Pinia** (planned state management)
+- **Vite** (or Vue CLI depending on team setup)
+
+---
+
+## 📦 Project Goals
+
+- ✅ Build core pages (Home, Products, Cart)
+- ✅ Apply Git best practices (branches, pull requests)
+- ✅ Learn Options API → migrate to Composition API
+- ✅ Write unit tests using Jest
+- ✅ Use BEM for clean, structured CSS
+- ✅ Provide a good written documentation
+
+---
+
+## 📁 Project Structure (Planned)
+
+```plaintext
+src/
+ ┣ assets/
+ ┣ components/
+ ┣ layouts/
+ ┣ pages/
+ ┣ router/
+ ┣ store/
+ ┣ types/
+ ┣ App.vue
+ ┗ main.ts
+```
+
+---
+
+## 🖥️ Pages
+- /products	Product listing page
+- /cart	Shopping cart page
+- /contact-us
+
+---
+
+## 📦 Setup Instructions
+### Clone the repo
+git clone https://github.com/Abdelrahman-Mohamd/saqaya-ecommerce-app.git
+cd saqaya-ecommerce-app
+
+### Install dependencies
+npm install
+
+### Run the development server
+npm run dev
+
+---
+
+## 📌 Features
+- Clean folder structure
+- Uses Vue Router for navigation
+- Prepares for API integration and state management
+- Follows Git best practices with feature branches and pull requests
+
+---
+
+## 📄 License
+- This project is for educational/demo purposes under the internship at SAQAYA.
+
+#### 💼 Developed by Abdelrahman Mohamed – Frontend Intern @ SAQAYA
+
