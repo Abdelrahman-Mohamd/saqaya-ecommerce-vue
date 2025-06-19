@@ -1,25 +1,18 @@
 <template>
-  <div class="app">
-    <Header />
-    <main class="app__main">
-      <!-- This renders the current route component -->
-      <RouterView />
-    </main>
-    <Footer />
-  </div>
+  <DefaultLayout>
+    <RouterView />
+  </DefaultLayout>
 </template>
 
 <script lang="ts">
 import { RouterView } from "vue-router";
-import Header from "./components/Header.vue";
-import Footer from "./components/Footer.vue";
+import DefaultLayout from "./layouts/DefaultLayout.vue";
 
 export default {
   name: "App",
   components: {
     RouterView,
-    Header,
-    Footer,
+    DefaultLayout,
   },
 };
 </script>

@@ -82,7 +82,7 @@
 import { Icon } from "@iconify/vue";
 
 export default {
-  name: "FooterComponent",
+  name: "AppFooter",
   components: {
     Icon,
   },
