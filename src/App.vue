@@ -17,26 +17,57 @@ export default {
 };
 </script>
 
-<style scoped>
-.app {
+<style>
+/* CSS Reset: Remove default margin, padding, box-sizing, etc. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family: system-ui, sans-serif;
+  background: #fff;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#app {
   min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
-.app__main {
-  flex: 1 0 auto;
-  width: 100%;
+
+/* Remove list styles on ul, ol elements */
+ul,
+ol {
+  list-style: none;
 }
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 </style>
