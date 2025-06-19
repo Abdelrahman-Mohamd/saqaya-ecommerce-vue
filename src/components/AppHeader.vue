@@ -16,31 +16,34 @@
       </button>
 
       <!-- Logo (centered on mobile, left on desktop) -->
-      <a href="/products" class="header__logo" aria-label="Home">
+      <RouterLink to="/products" class="header__logo" aria-label="Home">
         <Icon icon="mdi:alpha-h-box" width="32" height="32" />
-      </a>
+      </RouterLink>
 
       <!-- Desktop navigation links -->
       <nav class="header__nav">
-        <a class="header__link" href="/products">Products</a>
-        <a class="header__link" href="/contact-us">Contact Us</a>
+        <RouterLink class="header__link" to="/products">Products</RouterLink>
+        <RouterLink class="header__link" to="/contact-us"
+          >Contact Us</RouterLink
+        >
       </nav>
 
       <!-- Actions: Sign In and Cart -->
       <div class="header__actions">
         <a class="header__signin" href="#">Sign In</a>
-        <a class="header__cart" href="/cart" title="Cart">
+        <RouterLink class="header__cart" to="/cart" title="Cart">
           <Icon icon="mdi:cart-outline" width="24" height="24" />
-        </a>
+        </RouterLink>
       </div>
     </div>
 
     <!-- Mobile nav overlay (shows when menuOpen is true) -->
-    <!--This tells Vue to apply transition classes when the element appears or disappears. -->
     <transition name="fade">
       <div v-if="menuOpen" class="header__mobile-menu">
-        <a class="header__link" href="/products">Products</a>
-        <a class="header__link" href="/contact-us">Contact Us</a>
+        <RouterLink class="header__link" to="/products">Products</RouterLink>
+        <RouterLink class="header__link" to="/contact-us"
+          >Contact Us</RouterLink
+        >
       </div>
     </transition>
   </header>
@@ -49,12 +52,14 @@
 <script lang="ts">
 // Import the Icon component from Iconify for SVG icons
 import { Icon } from "@iconify/vue";
+import { RouterLink } from "vue-router";
 
 export default {
   name: "AppHeader", // Name of the component
-  // Register Icon as a child component
+  // Register Icon and RouterLink as child components
   components: {
     Icon,
+    RouterLink,
   },
   data() {
     return {
