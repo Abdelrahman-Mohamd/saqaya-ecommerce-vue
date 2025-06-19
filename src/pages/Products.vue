@@ -22,7 +22,7 @@
         :key="product.id"
         :product="product"
         @add-to-cart="addToCart"
-        @click.native="goToProduct(product.id)"
+        @click="goToProduct(product.id)"
       />
     </div>
   </div>
