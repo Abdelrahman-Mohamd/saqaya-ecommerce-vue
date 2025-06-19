@@ -1,8 +1,17 @@
 <template>
+  <!--
+    ProductCard.vue is a reusable component for displaying a single product in a card format.
+    It receives a product object as a prop and emits an event when the Add to Cart button is clicked.
+  -->
   <div class="product-card">
+    <!-- Product image -->
     <img :src="product.image" alt="Product Image" class="product-card__image" />
+    <!-- Product title -->
     <h2 class="product-card__title">{{ product.title }}</h2>
+    <!-- Product price -->
     <p class="product-card__price">${{ product.price.toFixed(2) }}</p>
+    <!-- Add to Cart button (emits event to parent) -->
+    <!-- stopPropagation using .stop to prevent event bubbling to parent -->
     <button
       class="product-card__button"
       @click.stop="$emit('add-to-cart', product)"
@@ -14,34 +23,37 @@
 
 <script lang="ts">
 export default {
+  // Name of the component
   name: "ProductCard",
+  // Props received from the parent (expects a product object)
   props: {
     product: {
       type: Object,
       required: true,
     },
   },
+  // Declare the custom event this component emits
   emits: ["add-to-cart"],
 };
 </script>
 
 <style lang="scss" scoped>
 .product-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
+  background: #fff; // Card background color
+  border-radius: 8px; // Rounded corners
+  padding: 1rem; // Inner spacing
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Subtle shadow
+  display: flex; // Use flexbox for layout
+  flex-direction: column; // Stack children vertically
+  align-items: center; // Center content horizontally
+  cursor: pointer; // Show pointer cursor on hover
 
   &__image {
     width: 100%;
     max-width: 150px;
     height: 150px;
     border-radius: 4px;
-    object-fit: contain;
+    object-fit: contain; // Ensure image fits nicely
   }
   &__title {
     margin: 1rem 0 0.5rem;

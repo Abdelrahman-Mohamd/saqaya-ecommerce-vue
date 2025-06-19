@@ -1,17 +1,20 @@
+// Import defineStore from Pinia to create a store
 import { defineStore } from "pinia";
+// Import the Product type for strong typing
 import type { Product } from "./cart";
 
-// Centralized static product data
+// Centralized static product data array
+// This array contains all products available in the store
 const products: Product[] = [
   {
-    id: 1,
-    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    price: 109.95,
+    id: 1, // Unique product ID
+    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops", // Product name
+    price: 109.95, // Product price
     description:
-      "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-    category: "men's clothing",
-    image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-    rating: { rate: 3.9, count: 120 },
+      "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday", // Product description
+    category: "men's clothing", // Product category
+    image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", // Product image URL
+    rating: { rate: 3.9, count: 120 }, // Product rating (rate and count)
   },
   {
     id: 2,
@@ -39,11 +42,15 @@ const products: Product[] = [
   },
 ];
 
+// Create a Pinia store for products
 export const useProductsStore = defineStore("products", {
-  state: () => ({
-    products: products as Product[],
+  // State contains the array of products
+  state: (): { products: Product[] } => ({
+    products, // All products available in the store
   }),
+  // Getters are like computed properties for the store
   getters: {
+    // getById returns a product by its id, or null if not found
     getById: (state) => (id: number) =>
       state.products.find((p) => p.id === id) || null,
   },
