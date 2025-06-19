@@ -34,7 +34,7 @@
 // Import the products store to fetch product data
 import { useProductsStore } from "../store/products";
 // Import the Product type for type safety
-import type { Product } from "../store/cart";
+import type { Product } from "../types";
 
 export default {
   name: "ProductDetailsPage", // Name of the page component

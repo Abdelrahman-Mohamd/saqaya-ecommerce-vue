@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import type { Product } from "../store/cart"; // Import the Product type for type safety
+import type { Product } from "../types"; // Import the Product type for type safety
 // Import Vue's defineComponent helper
 import { defineComponent } from "vue";
 // Import the cart store for add-to-cart functionality

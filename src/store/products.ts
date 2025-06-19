@@ -1,7 +1,7 @@
 // Import defineStore from Pinia to create a store
 import { defineStore } from "pinia";
 // Import the Product type for strong typing
-import type { Product } from "./cart";
+import type { Product } from "../types";
 
 // Create a Pinia store for products
 export const useProductsStore = defineStore("products", {

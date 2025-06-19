@@ -56,7 +56,7 @@
 import { defineComponent } from "vue";
 import { useCartStore } from "../store/cart";
 import { storeToRefs } from "pinia";
-import type { CartItem } from "../store/cart";
+import type { CartItem } from "../types";
 
 export default defineComponent({
   name: "CartPage",
