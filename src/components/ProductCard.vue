@@ -58,6 +58,13 @@ export default {
   &__title {
     margin: 1rem 0 0.5rem;
     font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap; // Prevents wrapping
+    overflow: hidden; // Hides overflow text
+    text-overflow: ellipsis; // Adds ... for overflow
+    width: 100%; // Ensures ellipsis works for long titles
+    display: block;
   }
   &__description {
     font-size: 1rem;
