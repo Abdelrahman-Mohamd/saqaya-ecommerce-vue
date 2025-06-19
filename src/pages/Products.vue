@@ -54,6 +54,8 @@ export default defineComponent({
     // Access the products store and get a reactive reference to products
     const productsStore = useProductsStore();
     const { products } = storeToRefs(productsStore);
+    // Fetch products from API when component is created
+    productsStore.fetchProducts();
     return {
       products, // All products to display
     };
