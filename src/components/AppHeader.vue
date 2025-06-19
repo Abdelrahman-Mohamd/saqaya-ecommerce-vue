@@ -1,7 +1,12 @@
 <template>
+  <!--
+    AppHeader.vue is the main site header/navigation bar.
+    It includes a logo, navigation links, sign-in, and cart actions.
+    On mobile, it shows a hamburger menu and overlays the nav links.
+  -->
   <header class="header">
     <div class="header__container">
-      <!-- Hamburger for mobile -->
+      <!-- Hamburger for mobile navigation (hidden on desktop) -->
       <button
         class="header__menu-btn"
         @click="toggleMenu"
@@ -10,18 +15,18 @@
         <Icon icon="mdi:menu" width="28" height="28" />
       </button>
 
-      <!-- Logo - shows on desktop and mobile (centered) -->
+      <!-- Logo (centered on mobile, left on desktop) -->
       <a href="/products" class="header__logo" aria-label="Home">
         <Icon icon="mdi:alpha-h-box" width="32" height="32" />
       </a>
 
-      <!-- Desktop nav -->
+      <!-- Desktop navigation links -->
       <nav class="header__nav">
         <a class="header__link" href="/products">Products</a>
         <a class="header__link" href="/contact-us">Contact Us</a>
       </nav>
 
-      <!-- Actions (Sign In + Cart) -->
+      <!-- Actions: Sign In and Cart -->
       <div class="header__actions">
         <a class="header__signin" href="#">Sign In</a>
         <a class="header__cart" href="/cart" title="Cart">
@@ -30,7 +35,8 @@
       </div>
     </div>
 
-    <!-- Mobile nav overlay -->
+    <!-- Mobile nav overlay (shows when menuOpen is true) -->
+    <!--This tells Vue to apply transition classes when the element appears or disappears. -->
     <transition name="fade">
       <div v-if="menuOpen" class="header__mobile-menu">
         <a class="header__link" href="/products">Products</a>
@@ -41,46 +47,50 @@
 </template>
 
 <script lang="ts">
+// Import the Icon component from Iconify for SVG icons
 import { Icon } from "@iconify/vue";
 
 export default {
-  name: "AppHeader",
-  // This is a required step when you want to use any custom components or third-party components within your component's template.
+  name: "AppHeader", // Name of the component
+  // Register Icon as a child component
   components: {
     Icon,
   },
-
   data() {
     return {
-      menuOpen: false,
+      menuOpen: false, // Controls visibility of the mobile menu
     };
   },
-
   methods: {
+    // Toggle the mobile menu open/closed
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
     },
+    // Close the mobile menu if resizing to desktop
     handleResize() {
       if (window.innerWidth > 768) {
         this.menuOpen = false;
       }
     },
   },
-
   mounted() {
+    // Listen for window resize to close mobile menu on desktop
     window.addEventListener("resize", this.handleResize);
   },
-
   beforeDestroy() {
+    // Clean up the event listener
     window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>
 
 <style lang="scss" scoped>
+//
+// AppHeader styles use BEM naming and are fully responsive.
+//
 .header {
-  background: #fafafa;
-  border-bottom: 1px solid #e0e0e0;
+  background: #fafafa; // Light background
+  border-bottom: 1px solid #e0e0e0; // Subtle border
   width: 100%;
   position: relative;
   z-index: 100;
@@ -177,7 +187,9 @@ export default {
 
     &__logo {
       position: absolute;
+      //It positions the left edge of the element at the center of its parent (50% from the left side).
       left: 50%;
+      //This pulls the element back to the left by 50% of its own width — effectively centering it.
       transform: translateX(-50%);
       margin: 0;
     }
@@ -236,13 +248,16 @@ export default {
 }
 
 // Transition for mobile menu
+// Controls the animation duration and easing
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from,
+// Starting state (when appearing) & Ending state (when disappearing)
+.fade-enter-from,   // Initial state: element is hidden (opacity 0)
 .fade-leave-to {
+  // Final state: fade out to hidden (opacity 0)
   opacity: 0;
 }
 </style>
