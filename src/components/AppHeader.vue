@@ -44,7 +44,7 @@
 import { Icon } from "@iconify/vue";
 
 export default {
-  name: "HeaderComponent",
+  name: "AppHeader",
   // This is a required step when you want to use any custom components or third-party components within your component's template.
   components: {
     Icon,
