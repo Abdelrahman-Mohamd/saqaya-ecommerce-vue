@@ -7,7 +7,7 @@ export default defineConfig({
   // Build configuration for production
   build: {
     // Generate source maps only in development
-    sourcemap: process.env.NODE_ENV === "development",
+    sourcemap: false,
     // Optimize build for production
     minify: "terser",
     // Chunk size warning limit
