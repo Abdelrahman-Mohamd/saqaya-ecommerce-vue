@@ -3,11 +3,11 @@
 
 [build]
   # The command to build your project
-  command = "npm ci && npm run build"
+  command = "npm install --legacy-peer-deps && npm run build"
   # The directory that contains the built files to deploy
   publish = "dist"
   # Node.js version to use for the build
-  environment = { NODE_VERSION = "18", NPM_FLAGS = "--legacy-peer-deps" }
+  environment = { NODE_VERSION = "18" }
 
 # Redirect all routes to index.html for Vue Router (SPA)
 # This ensures that direct URL access and page refreshes work correctly
