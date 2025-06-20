@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Netlify-specific files and folders
+.netlify/
+functions/
+lambda/
+dist-netlify/
+netlify.log
+deploy.log
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +30,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
