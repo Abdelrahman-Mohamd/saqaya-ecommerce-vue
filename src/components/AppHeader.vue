@@ -27,13 +27,15 @@
           >Contact Us</RouterLink
         >
       </nav>
-
       <!-- Actions: Sign In and Cart -->
       <div class="header__actions">
         <a class="header__signin" href="#">Sign In</a>
-        <RouterLink class="header__cart" to="/cart" title="Cart">
+        <button class="header__cart" @click="toggleCart" title="Cart">
           <Icon icon="mdi:cart-outline" width="24" height="24" />
-        </RouterLink>
+          <span v-if="cartItemCount > 0" class="header__cart-badge">{{
+            cartItemCount
+          }}</span>
+        </button>
       </div>
     </div>
 
@@ -46,6 +48,9 @@
         >
       </div>
     </transition>
+
+    <!-- Cart Sidebar -->
+    <CartSidebar :isOpen="cartOpen" @close="closeCart" />
   </header>
 </template>
 
@@ -53,23 +58,46 @@
 // Import the Icon component from Iconify for SVG icons
 import { Icon } from "@iconify/vue";
 import { RouterLink } from "vue-router";
+import CartSidebar from "./CartSidebar.vue";
+import { useCartStore } from "../store/cart";
+import { storeToRefs } from "pinia";
 
 export default {
   name: "AppHeader", // Name of the component
-  // Register Icon and RouterLink as child components
+  // Register components
   components: {
     Icon,
     RouterLink,
+    CartSidebar,
   },
   data() {
+    const cartStore = useCartStore();
+    const { items } = storeToRefs(cartStore);
+
     return {
       menuOpen: false, // Controls visibility of the mobile menu
+      cartOpen: false, // Controls visibility of the cart sidebar
+      items, // Cart items for badge count
     };
+  },
+  computed: {
+    // Calculate total number of items in cart for badge
+    cartItemCount(): number {
+      return this.items.reduce((sum, item) => sum + item.quantity, 0);
+    },
   },
   methods: {
     // Toggle the mobile menu open/closed
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
+    },
+    // Toggle the cart sidebar open/closed
+    toggleCart() {
+      this.cartOpen = !this.cartOpen;
+    },
+    // Close the cart sidebar
+    closeCart() {
+      this.cartOpen = false;
     },
     // Close the mobile menu if resizing to desktop
     handleResize() {
@@ -155,11 +183,38 @@ export default {
       text-decoration: underline;
     }
   }
-
   &__cart {
     display: flex;
     align-items: center;
+    background: none;
+    border: none;
     color: #222;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    position: relative;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  &__cart-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 
   &__menu-btn {
