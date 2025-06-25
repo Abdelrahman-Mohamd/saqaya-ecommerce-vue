@@ -13,7 +13,7 @@ export interface Product {
   };
 }
 
-// Define the CartItem interface to represent an item in the cart
+// Define the CartItem interface to represent an item in the cart (CartItem is about one item.)
 // This is a composition approach, it keeps the Product separate from the cart logic.
 // That violates the Single Responsibility Principle (SRP)
 //extends Product flattens the object and says: “CartItem is literally just a Product + 1 field.”
@@ -21,4 +21,15 @@ export interface Product {
 export interface CartItem {
   product: Product; // The product object
   quantity: number; // How many of this product are in the cart
+}
+
+// CartState is about the whole cart (which is a list of items).
+// Define the cart module state interface
+export interface CartState {
+  items: CartItem[]; // Array of cart items with product and quantity
+}
+
+// Define the products module state interface
+interface ProductsState {
+  items: Product[]; // Array of all products from API
 }

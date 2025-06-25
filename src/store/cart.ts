@@ -1,17 +1,21 @@
-// Import the defineStore function from Pinia to create a store
-import { defineStore } from "pinia";
-import type { Product, CartItem } from "../types"; // Import types for strong typing
+// This file has been migrated to Vuex
+// The cart functionality is now handled in src/store/index.ts
+// This file is kept for reference but is no longer used
 
-// Create a Pinia store for managing the shopping cart
+// The Pinia cart store has been completely replaced with a Vuex store
+// All cart operations (add, remove, clear) are now handled through Vuex actions and mutations
+// Components now use mapState, mapGetters, and mapActions from Vuex instead of Pinia's useCartStore
+
+// Original Pinia implementation (now deprecated):
+/*
+import { defineStore } from "pinia";
+import type { Product, CartItem } from "../types";
+
 export const useCartStore = defineStore("cart", {
-  // The state function returns the initial state of the store
   state: (): { items: CartItem[] } => ({
-    // your reactive state
-    items: [], // The cart starts empty (array of CartItem objects)
+    items: [],
   }),
-  // Actions are methods that can mutate the state (functions to update state)
   actions: {
-    // Add a product to the cart (increment quantity if already present)
     addToCart(product: Product) {
       const existing = this.items.find(
         (item) => item.product.id === product.id
@@ -22,7 +26,6 @@ export const useCartStore = defineStore("cart", {
         this.items.push({ product, quantity: 1 });
       }
     },
-    // Remove a single quantity of a product from the cart by its id
     removeFromCart(productId: number) {
       const index = this.items.findIndex(
         (item) => item.product.id === productId
@@ -31,7 +34,7 @@ export const useCartStore = defineStore("cart", {
         if (this.items[index].quantity > 1) {
           this.items[index].quantity -= 1;
         } else {
-          this.items.splice(index, 1); // used to add, remove, or replace elements in an array in place (i.e., it modifies the original array).
+          this.items.splice(index, 1);
         }
       }
     },
@@ -40,3 +43,6 @@ export const useCartStore = defineStore("cart", {
     // computed properties based on state
   },
 });
+*/
+
+export {}; // Export empty object to make this a valid module

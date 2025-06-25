@@ -10,18 +10,17 @@
     <h2 class="product-card__title">{{ product.title }}</h2>
     <!-- Product price -->
     <p class="product-card__price">${{ product.price.toFixed(2) }}</p>
-    <!-- Add to Cart button (emits event to parent) -->
+    <!-- Add to Cart button (calls Vuex action directly) -->
     <!-- stopPropagation using .stop to prevent event bubbling to parent -->
-    <button
-      class="product-card__button"
-      @click.stop="$emit('add-to-cart', product)"
-    >
+    <button class="product-card__button" @click.stop="addToCart(product)">
       Add to Cart
     </button>
   </div>
 </template>
 
 <script lang="ts">
+import { mapActions } from "vuex";
+
 export default {
   // Name of the component
   name: "ProductCard",
@@ -32,8 +31,10 @@ export default {
       required: true,
     },
   },
-  // Declare the custom event this component emits
-  emits: ["add-to-cart"],
+  methods: {
+    // Map Vuex actions from cart module to component methods (using namespace)
+    ...mapActions("cart", ["addToCart"]),
+  },
 };
 </script>
 

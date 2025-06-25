@@ -2,7 +2,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 // Import the page components that will be rendered for each route
 import Products from "../pages/Products.vue";
-import Cart from "../pages/Cart.vue";
 import ContactUs from "../pages/ContactUs.vue";
 import ProductDetails from "../pages/ProductDetails.vue";
 
@@ -11,7 +10,6 @@ const routes = [
   { path: "/", redirect: "/products" }, // Redirect root to /products
   { path: "/products", name: "Products", component: Products }, // Product listing page (name: is a unique name to reference this route)
   { path: "/products/:id", name: "ProductDetails", component: ProductDetails }, // Product details page (dynamic id)
-  { path: "/cart", name: "Cart", component: Cart }, // Shopping cart page
   { path: "/contact-us", name: "ContactUs", component: ContactUs }, // Contact page
 ];
 

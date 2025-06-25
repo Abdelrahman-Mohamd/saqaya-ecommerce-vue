@@ -1,7 +1,7 @@
 <template>
   <!--
     ProductDetails.vue displays detailed information about a single product.
-    It fetches the product by id from the route params using the products Pinia store.
+    It fetches the product by id from the route params using the products Vuex store.
     If the product is found, it shows all details; otherwise, it shows a not found message.
   -->
   <div class="product-details" v-if="product">
@@ -31,8 +31,8 @@
 </template>
 
 <script lang="ts">
-// Import the products store to fetch product data
-import { useProductsStore } from "../store/products";
+// Import Vuex helper functions for accessing store
+import { mapGetters, mapActions } from "vuex";
 // Import the Product type for type safety
 import type { Product } from "../types";
 
@@ -45,14 +45,26 @@ export default {
       product: null as Product | null,
     };
   },
+  computed: {
+    // Map Vuex getters to computed properties
+    ...mapGetters("products", [
+      "getById", // Getter for finding specific product by ID
+    ]),
+  },
+
+  methods: {
+    // Map Vuex actions to component methods
+    ...mapActions("products", ["fetchProducts"]), // Maps to this.$store.dispatch('products/fetchProducts')
+  },
 
   //You want this to happen as soon as the component loads (before rendering anything)
-  //You’re not waiting for DOM elements, so created() is perfect.
-  created() {
+  //You're not waiting for DOM elements, so created() is perfect.
+  async created() {
+    // Make sure products are loaded first
+    await this.fetchProducts();
     // Get the product id from the route params and fetch the product from the store
     const id = Number(this.$route.params.id); // to convert the returned string id to a number
-    const productsStore = useProductsStore();
-    this.product = productsStore.getById(id); //the data() function returns an object whose properties become available on this — which refers to the component instance.
+    this.product = this.getById(id); //the data() function returns an object whose properties become available on this — which refers to the component instance.
   },
 };
 </script>

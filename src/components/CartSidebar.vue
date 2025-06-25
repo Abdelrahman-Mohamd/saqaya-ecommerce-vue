@@ -3,16 +3,7 @@
     CartSidebar.vue is a sliding cart panel that opens from the right side of the screen.
     It displays cart items with their images, titles, prices, and quantities.
     Users can modify quantities, remove items, and see the total price.
-    The sidebar slides in/out with smooth CSS animations for better UX.
-    
-    Key Features:
-    - Dark theme design matching modern e-commerce standards
-    - Responsive layout that works on mobile and desktop
-    - Real-time cart updates using Pinia store
-    - Smooth slide-in/out animations
-    - Quantity increment/decrement controls
-    - Individual item removal functionality
-    - Total price calculation and display
+  
   -->
 
   <!-- 
@@ -66,7 +57,7 @@
         <!-- 
           Container for cart items - only shows when items exist
           - v-if="items.length > 0" conditionally renders this section
-          - items comes from Pinia store via storeToRefs for reactivity
+          - items comes from Vuex store via mapState for reactivity
         -->
         <div v-if="items.length > 0" class="cart-sidebar__items">
           <!-- 
@@ -101,8 +92,9 @@
                 - White text for dark theme visibility
                 - Line clamping to limit to 2 lines and add ellipsis for overflow
               -->
-              <h3 class="cart-item__title">{{ item.product.title }}</h3>
-
+              <h3 class="cart-item__title">
+                {{ item.product?.title || "Product" }}
+              </h3>
               <!-- 
                 Product price display
                 - Shows individual item price (not total for quantity)
@@ -139,7 +131,6 @@
                   - Centered text alignment with minimum width for consistency
                 -->
                 <span class="cart-item__qty">{{ item.quantity }}</span>
-
                 <!-- 
                   Increase quantity button
                   - Calls incrementQuantity method with product ID
@@ -154,7 +145,6 @@
                 </button>
               </div>
             </div>
-
             <!-- 
               Remove item button (trash can icon)
               - Completely removes this product from cart regardless of quantity
@@ -164,7 +154,7 @@
             -->
             <button
               class="cart-item__remove"
-              @click="removeFromCart(item.product.id)"
+              @click="clearCart(item.product.id)"
               aria-label="Remove item"
             >
               <!-- Trash can outline icon with smaller dimensions than header icons -->
@@ -229,9 +219,7 @@
             - .toFixed(2) ensures consistent currency formatting
             - White color to match the label and maintain hierarchy
           -->
-          <span class="cart-sidebar__total-price"
-            >${{ totalPrice.toFixed(2) }}</span
-          >
+          <span class="cart-sidebar__total-price">${{ total.toFixed(2) }}</span>
         </div>
 
         <!-- 
@@ -249,27 +237,20 @@
 
 <script lang="ts">
 // Import Vue's defineComponent function for creating components with TypeScript support
-import { defineComponent } from "vue";
 
 // Import Icon component from Iconify for displaying SVG icons
 // Iconify provides a vast library of icons that can be used as Vue components
 import { Icon } from "@iconify/vue";
 
-// Import the cart store to access cart state and methods
-// This gives us access to cart items, add/remove functionality
-import { useCartStore } from "../store/cart";
-
-// Import storeToRefs to maintain reactivity when extracting properties from Pinia stores
-// Without this, destructured properties would lose their reactive connection
-import { storeToRefs } from "pinia";
-
-// Import TypeScript type definition for cart items
-// Ensures type safety when working with cart item objects
-import type { CartItem } from "../types";
+// Import Vuex helper functions for accessing store
+// mapState creates computed properties that return store state
+// mapGetters creates computed properties that return store getters
+// mapActions creates methods that dispatch store actions
+import { mapState, mapGetters, mapActions } from "vuex";
 
 // Export the component definition using Vue 3's defineComponent helper
 // This provides full TypeScript support and better developer experience
-export default defineComponent({
+export default {
   // Component name for debugging and Vue DevTools
   // Shows up in Vue DevTools component tree as "CartSidebar"
   name: "CartSidebar",
@@ -289,89 +270,68 @@ export default defineComponent({
       required: true, // This prop must be provided by parent component
     },
   },
-
   // Define custom events this component can emit to parent
   // Allows child-to-parent communication in Vue's data flow
   emits: ["close"], // Emits "close" event when user wants to close sidebar
 
-  // Data function returns the component's reactive state
-  // All properties returned here become reactive and available in template
-  data() {
-    // Get instance of the cart store to access cart state and methods
-    // useCartStore() returns the singleton instance of our Pinia cart store
-    const cartStore = useCartStore();
-
-    // Extract reactive items array from cart store
-    // storeToRefs ensures items remains reactive when destructured
-    // Without storeToRefs, items would be a static snapshot instead of reactive
-    const { items } = storeToRefs(cartStore);
-
-    // Return object becomes component's reactive data
-    return {
-      items, // Reactive array of cart items from store
-      cartStore, // Store instance for calling methods in component methods
-    };
-  },
-
   // Computed properties are reactive derived values
   // They automatically recalculate when their dependencies change
   computed: {
-    // Calculate total price of all items in cart
-    // This automatically updates whenever items array or quantities change
-    totalPrice(): number {
-      // Use Array.reduce to sum up (price × quantity) for each item
-      return this.items.reduce(
-        // Accumulator function: sum + (current item's price × quantity)
-        (sum: number, item: CartItem) =>
-          sum + item.product.price * item.quantity,
-        0 // Initial value for the accumulator
-      );
-    },
+    // Map Vuex state to computed properties
+    // This creates reactive computed properties that automatically update when store state changes
+    ...mapState("cart", {
+      // Create 'items' computed property that returns store.state.cart.items
+      // This gives us access to cart items array from Vuex cart module
+      items: "items",
+    }),
+
+    // Map Vuex getters to computed properties
+    // Getters are like computed properties for the store
+    ...mapGetters("cart", [
+      "total", // Maps to this.$store.getters['cart/total']
+    ]),
   },
 
   // Methods object contains all component methods
   // These are functions that can be called from template or other methods
   methods: {
+    // Map Vuex actions to component methods
+    // This creates methods that dispatch actions to the store
+    ...mapActions("cart", [
+      "addToCart", // Maps to this.$store.dispatch('cart/addToCart')
+      "removeFromCart", // Maps to this.$store.dispatch('cart/removeFromCart')
+      "clearCart", // Maps to this.$store.dispatch('cart/clearCart')
+    ]),
+
     // Close the cart sidebar
     // Emits "close" event to parent component (AppHeader)
     closeCart() {
       // $emit is Vue's method for emitting custom events to parent
       // Parent component listens with @close="handleClose"
       this.$emit("close");
-    },
-
-    // Remove a product completely from cart (all quantities)
-    // Called when user clicks trash icon on cart item
-    removeFromCart(productId: number) {
-      // Call removeFromCart method on cart store
-      // This removes one unit of the product (or entire item if quantity becomes 0)
-      this.cartStore.removeFromCart(productId);
-    },
-
-    // Increase quantity of a specific product by 1
+    }, // Increase quantity of a specific product by 1
     // Called when user clicks "+" button on cart item
     incrementQuantity(productId: number) {
-      // Find the cart item with matching product ID
-      // items is reactive array from cart store
-      const item = this.items.find((item) => item.product.id === productId);
-
-      // If item exists in cart, add one more unit
-      if (item) {
-        // Call addToCart with the product object
-        // Store logic handles incrementing existing item quantity
-        this.cartStore.addToCart(item.product);
+      // Find the product in the items array first
+      const item = this.items.find(
+        (item: any) => item.product?.id === productId
+      );
+      if (item.product) {
+        // Call addToCart with the full product object
+        this.addToCart(item.product);
       }
     },
 
     // Decrease quantity of a specific product by 1
     // Called when user clicks "-" button on cart item
     decrementQuantity(productId: number) {
-      // Call removeFromCart method on cart store
+      // Call mapped Vuex action to remove one unit from cart
+      // This dispatches 'removeFromCart' action which commits 'removeFromCart' mutation
       // Store logic handles decrementing quantity or removing item if quantity becomes 0
-      this.cartStore.removeFromCart(productId);
+      this.removeFromCart(productId);
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped>
@@ -380,18 +340,8 @@ export default defineComponent({
   
   This stylesheet uses SCSS (Sass) preprocessing for enhanced CSS features:
   - Nested selectors for better organization
-  - Variables and mixins support
   - BEM naming methodology for consistent class naming
   - Scoped styles to prevent conflicts with other components
-  
-  Color Scheme (Dark Theme):
-  - Primary Background: #4a5568 (dark slate gray)
-  - Secondary Background: #718096 (medium gray)
-  - Text Primary: #ffffff (white)
-  - Text Secondary: #cbd5e0 (light gray)
-  - Text Tertiary: #e2e8f0 (very light gray)
-  - Borders: #718096, #a0aec0 (gray variations)
-  - Accent: #fc8181 (light red for destructive actions)
 */
 
 // Overlay that covers the entire screen when cart is open

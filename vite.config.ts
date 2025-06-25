@@ -17,7 +17,7 @@ export default defineConfig({
       output: {
         // Manual chunks for better caching
         manualChunks: {
-          "vue-vendor": ["vue", "vue-router", "pinia"],
+          "vue-vendor": ["vue", "vue-router", "vuex"],
           "ui-vendor": ["@iconify/vue"],
         },
       },
