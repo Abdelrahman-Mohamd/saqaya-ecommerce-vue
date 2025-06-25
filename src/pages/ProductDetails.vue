@@ -32,7 +32,7 @@
 
 <script lang="ts">
 // Import Vuex helper functions for accessing store
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 // Import the Product type for type safety
 import type { Product } from "../types";
 
@@ -45,26 +45,28 @@ export default {
       product: null as Product | null,
     };
   },
-  computed: {
-    // Map Vuex getters to computed properties
-    ...mapGetters("products", [
-      "getById", // Getter for finding specific product by ID
-    ]),
-  },
 
   methods: {
     // Map Vuex actions to component methods
-    ...mapActions("products", ["fetchProducts"]), // Maps to this.$store.dispatch('products/fetchProducts')
+    ...mapActions("products", [
+      "fetchProductById", // Add the more efficient action
+    ]),
   },
 
   //You want this to happen as soon as the component loads (before rendering anything)
   //You're not waiting for DOM elements, so created() is perfect.
   async created() {
-    // Make sure products are loaded first
-    await this.fetchProducts();
-    // Get the product id from the route params and fetch the product from the store
-    const id = Number(this.$route.params.id); // to convert the returned string id to a number
-    this.product = this.getById(id); //the data() function returns an object whose properties become available on this — which refers to the component instance.
+    // Get the product id from the route params
+    const id = Number(this.$route.params.id);
+
+    // Use fetchProductById
+    // This will check state first, then fetch from API only if needed
+    try {
+      this.product = await this.fetchProductById(id);
+    } catch (error) {
+      console.error("Failed to fetch product:", error);
+      // this.product remains null, so "Product not found" will show
+    }
   },
 };
 </script>

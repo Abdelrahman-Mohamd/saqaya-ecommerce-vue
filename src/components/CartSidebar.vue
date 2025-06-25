@@ -300,7 +300,7 @@ export default {
     ...mapActions("cart", [
       "addToCart", // Maps to this.$store.dispatch('cart/addToCart')
       "removeFromCart", // Maps to this.$store.dispatch('cart/removeFromCart')
-      "clearCart", // Maps to this.$store.dispatch('cart/clearCart')
+      "clearCart", // Maps to this.$store.dispatch('cart/removeCartItemCompletely')
     ]),
 
     // Close the cart sidebar
