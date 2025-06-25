@@ -11,81 +11,102 @@ const cartModule = {
   namespaced: true,
 
   // Module state - cart-specific data
-  // This function returns an object that matches the CartState interface.
+  // This function returns an object that matches the CartState interface
   state: (): CartState => ({
     items: [], // Initialize with empty cart (array of CartItem objects)
   }),
 
-  // Module mutations - cart-specific state changes
+  // Module mutations - cart-specific state changes (ONLY state modifications)
   mutations: {
-    // In Vuex mutations, the first parameter is always the module state
-    // The second parameter is the payload (what you want to add to the cart)
-    addToCart(state: CartState, product: Product) {
-      // Find if product already exists in cart by comparing product IDs
-      const existingItem = state.items.find(
+    // Add a cart item
+    addToCart(state: CartState, cartItem: CartItem) {
+      state.items.push(cartItem);
+    },
+
+    //  Update quantity of existing item
+    updateCartItemQuantity(
+      state: CartState,
+      { index, quantity }: { index: number; quantity: number }
+    ) {
+      state.items[index].quantity = quantity;
+    },
+
+    // Remove item from cart by index
+    removeCartItem(state: CartState, index: number) {
+      state.items.splice(index, 1);
+    },
+
+    // Clear entire cart
+    clearCart(state: CartState) {
+      state.items = [];
+    },
+  },
+  // Module actions - cart-specific business logic
+  actions: {
+    // Add product to cart
+    addToCart({ commit, state }: any, product: Product) {
+      // Find if product already exists in cart
+      const existingItemIndex = state.items.findIndex(
         (item: CartItem) => item.product.id === product.id
       );
 
-      if (existingItem) {
+      if (existingItemIndex !== -1) {
         // Product already in cart - increment quantity by 1
-        existingItem.quantity += 1;
+        const newQuantity = state.items[existingItemIndex].quantity + 1;
+        commit("updateCartItemQuantity", {
+          index: existingItemIndex,
+          quantity: newQuantity,
+        });
       } else {
         // New product - add to cart with quantity of 1
-        state.items.push({
+        const newCartItem: CartItem = {
           product, // The complete product object
           quantity: 1, // Initial quantity
-        });
+        };
+        commit("addToCart", newCartItem);
       }
     },
 
-    removeFromCart(state: CartState, productId: number) {
-      // Find the index of the item to remove
-      const index = state.items.findIndex(
+    // Remove one item from cart
+    removeFromCart({ commit, state }: any, productId: number) {
+      // Find the item to remove
+      const existingItemIndex = state.items.findIndex(
         (item: CartItem) => item.product.id === productId
       );
 
-      // Only proceed if item exists in cart
-      if (index !== -1) {
-        if (state.items[index].quantity > 1) {
-          // More than 1 quantity - just decrement by 1
-          state.items[index].quantity -= 1;
+      if (existingItemIndex !== -1) {
+        const existingItem = state.items[existingItemIndex];
+        if (existingItem.quantity > 1) {
+          // Business logic: More than 1 quantity - just decrement by 1
+          const newQuantity = existingItem.quantity - 1;
+          commit("updateCartItemQuantity", {
+            index: existingItemIndex,
+            quantity: newQuantity,
+          });
         } else {
-          // Only 1 quantity left - remove item completely from cart
-          // splice() modifies the original array by removing elements
-          state.items.splice(index, 1);
+          // Only 1 quantity left - remove item completely
+          commit("removeCartItem", existingItemIndex);
         }
       }
     },
 
-    // Clear the entire cart item no matter the quantity
-    clearCart(state: CartState, productId: number) {
-      const index = state.items.findIndex(
+    // Remove specific item from cart completely
+    clearCart({ commit, state }: any, productId: number) {
+      // Find the item to remove completely
+      const existingItemIndex = state.items.findIndex(
         (item: CartItem) => item.product.id === productId
       );
 
-      if (index !== -1) {
-        state.items.splice(index, 1);
+      if (existingItemIndex !== -1) {
+        // Item found - remove it completely regardless of quantity
+        commit("removeCartItem", existingItemIndex);
       }
     },
-  },
-  // Module actions - cart-specific async operations
-  actions: {
-    // the first parameter of an action is the context object, which contains several properties and methods for interacting with the store (like commit, dispatch, state, getters, etc.)
-    // object destructuring: it extracts the commit method from the context object.
-    // Type: any is a shortcut to avoid TypeScript errors when you don't want to define the full type of the context object.
-    // The proper type is (ActionContext<CartState, RootState>), so any is often used for simplicity in small projects or examples.
-    addToCart({ commit }: any, product: Product) {
-      // Commit the addToCart mutation within this module
-      commit("addToCart", product);
-    },
 
-    removeFromCart({ commit }: any, productId: number) {
-      // Commit the removeFromCart mutation within this module
-      commit("removeFromCart", productId);
-    },
-    clearCart({ commit }: any, productId: number) {
-      // Commit the clearCart mutation within this module
-      commit("clearCart", productId);
+    // Action: Clear entire cart
+    clearAllCart({ commit }: any) {
+      // Business logic: Clear the entire cart
+      commit("clearCart");
     },
   },
 
@@ -111,11 +132,6 @@ const cartModule = {
           total + item.product.price * item.quantity,
         0
       );
-    },
-
-    //  Check if cart is empty
-    isEmpty: (state: CartState): boolean => {
-      return state.items.length === 0;
     },
   },
 };

@@ -14,12 +14,24 @@ const productsModule = {
   state: (): ProductsState => ({
     items: [], // Initialize with empty products array
   }),
-
-  // Module mutations - products-specific state changes
+  // Module mutations - products-specific state changes (ONLY state modifications)
   mutations: {
-    // Set the products array (from API)
+    //  Set the entire products array (from API)
     setProducts(state: ProductsState, products: Product[]) {
       state.items = products;
+    },
+
+    //  Add a new product to the array
+    addProduct(state: ProductsState, product: Product) {
+      state.items.push(product);
+    },
+
+    // Update existing product by index
+    updateProduct(
+      state: ProductsState,
+      { index, product }: { index: number; product: Product }
+    ) {
+      state.items[index] = product;
     },
   },
 
@@ -39,28 +51,52 @@ const productsModule = {
       }
     },
 
-    // Fetch a single product by ID (async action)
+    // Fetch a single product by ID (async action with business logic)
     async fetchProductById({ commit, state }: any, productId: number) {
       try {
         // Check if product already exists in state
-        const existingProduct = state.items.find(
+        const existingProductIndex = state.items.findIndex(
           (p: Product) => p.id === productId
         );
-        if (existingProduct) {
-          return existingProduct;
+        if (existingProductIndex !== -1) {
+          // Product exists, return it without API call
+          return state.items[existingProductIndex];
         }
 
-        // Fetch from API if not in state
+        // Product not in state, fetch from API
         const res = await fetch(
           `https://fakestoreapi.com/products/${productId}`
         );
         if (!res.ok) throw new Error(`Failed to fetch product ${productId}`);
         const product = await res.json();
+
+        // Business logic: Add new product to state
         commit("addProduct", product);
         return product;
       } catch (err) {
         console.error(`Error fetching product ${productId}:`, err);
         throw err;
+      }
+    },
+
+    // Update existing product
+    updateExistingProduct({ commit, state }: any, updatedProduct: Product) {
+      //  Find the product to update
+      const existingProductIndex = state.items.findIndex(
+        (p: Product) => p.id === updatedProduct.id
+      );
+
+      if (existingProductIndex !== -1) {
+        // Business logic: Product found, update it
+        commit("updateProduct", {
+          index: existingProductIndex,
+          product: updatedProduct,
+        });
+        return updatedProduct;
+      } else {
+        // Business logic: Product not found, add it as new
+        commit("addProduct", updatedProduct);
+        return updatedProduct;
       }
     },
   },

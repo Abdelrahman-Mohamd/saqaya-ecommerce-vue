@@ -1,1 +1,25 @@
-	Future state management like Pinia or Vuex
+    # State Management - Vuex Implementation
+
+This project now uses **Vuex 4** for state management with namespaced modules.
+
+## Structure:
+
+- `index.ts` - Main Vuex store configuration
+- `modules/cart.ts` - Cart management (add, remove, clear, totals)
+- `modules/products.ts` - Product management (fetch, find by ID)
+
+## Migration Completed:
+
+- ✅ Migrated from Pinia to Vuex with full TypeScript support
+- ✅ Namespaced modules for better organization
+- ✅ All components updated to use Vuex helpers
+- ✅ Cart functionality (add, remove, quantities, persistence)
+- ✅ Product sorting functionality added
+- ✅ Real-time reactive updates across components
+
+## Features:
+
+- Cart management with local storage persistence
+- Product fetching and caching
+- Sort products by price, rating, or name
+- Type-safe with TypeScript interfaces
