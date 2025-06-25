@@ -12,10 +12,9 @@
     "postbuild": "echo 'Build completed successfully!'"
   },
   "dependencies": {
-    "pinia": "^3.0.3",
-    "pinia-plugin-persistedstate": "^4.3.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.27.4",

@@ -3,7 +3,7 @@
     Products.vue is the main product listing page.
     It displays all products in a responsive grid using the ProductCard component.
     Clicking a card navigates to the product details page.
-    The Add to Cart button adds the product to the cart using Pinia.
+    The Add to Cart button adds the product to the cart using Vuex.
   -->
   <div class="products">
     <!-- Page title -->
@@ -14,14 +14,13 @@
         Loop through all products and render a ProductCard for each one.
         - :key gives each card a unique identifier for Vue's reactivity.
         - :product passes the product data as a prop to ProductCard.
-        - @add-to-cart listens for the custom event from ProductCard.
         - @click.native allows clicking the card to navigate to details.
+        ProductCard now handles add-to-cart directly via Vuex actions.
       -->
       <ProductCard
-        v-for="product in products"
+        v-for="product in items"
         :key="product.id"
         :product="product"
-        @add-to-cart="addToCart"
         @click="goToProduct(product.id)"
       />
     </div>
@@ -29,47 +28,36 @@
 </template>
 
 <script lang="ts">
-import type { Product } from "../types"; // Import the Product type for type safety
 // Import Vue's defineComponent helper
 import { defineComponent } from "vue";
-// Import the cart store for add-to-cart functionality
-import { useCartStore } from "../store/cart";
-// Import the products store for product data
-import { useProductsStore } from "../store/products";
-
-// Import storeToRefs to get reactive references from Pinia stores
-// sometimes you want to extract individual properties from the store while keeping reactivity.
-// That’s exactly what storeToRefs() does:
-// It converts all reactive state and getters into separate ref()s,
-//  so you can destructure them safely in your component and access them.
-// it is okay if you didn't want to destrcuture the store properties.
-import { storeToRefs } from "pinia";
+// Import Vuex helper functions for accessing store
+import { mapState, mapActions } from "vuex";
 // Import the ProductCard component for displaying each product
 import ProductCard from "../components/ProductCard.vue";
 
 export default defineComponent({
   name: "ProductsPage", // Name of the page component
   components: { ProductCard }, // Register ProductCard as a child component
-  data() {
-    // Access the products store and get a reactive reference to products
-    const productsStore = useProductsStore();
-    const { products } = storeToRefs(productsStore);
-    // Fetch products from API when component is created
-    productsStore.fetchProducts();
-    return {
-      products, // All products to display
-    };
+  computed: {
+    // Map Vuex state to computed properties for products
+    ...mapState("products", ["items"]),
   },
+
   methods: {
-    // Add a product to the cart using the cart store
-    addToCart(product: Product) {
-      const cart = useCartStore();
-      cart.addToCart(product);
-    },
+    // Map Vuex actions to component methods
+    ...mapActions("products", ["fetchProducts"]), // Maps to this.$store.dispatch('products/fetchProducts')
+
     // Navigate to the product details page for the given product id
+    // ProductCard now handles add-to-cart directly via Vuex actions
     goToProduct(id: number) {
       this.$router.push({ name: "ProductDetails", params: { id } });
     },
+  },
+
+  // Lifecycle hook - called when component is created
+  async created() {
+    // Fetch products from API when component is created
+    await this.fetchProducts();
   },
 });
 </script>

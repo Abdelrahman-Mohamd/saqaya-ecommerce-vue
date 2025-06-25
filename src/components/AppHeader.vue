@@ -32,8 +32,8 @@
         <a class="header__signin" href="#">Sign In</a>
         <button class="header__cart" @click="toggleCart" title="Cart">
           <Icon icon="mdi:cart-outline" width="24" height="24" />
-          <span v-if="cartItemCount > 0" class="header__cart-badge">{{
-            cartItemCount
+          <span v-if="itemCount > 0" class="header__cart-badge">{{
+            itemCount
           }}</span>
         </button>
       </div>
@@ -59,8 +59,7 @@
 import { Icon } from "@iconify/vue";
 import { RouterLink } from "vue-router";
 import CartSidebar from "./CartSidebar.vue";
-import { useCartStore } from "../store/cart";
-import { storeToRefs } from "pinia";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AppHeader", // Name of the component
@@ -71,20 +70,14 @@ export default {
     CartSidebar,
   },
   data() {
-    const cartStore = useCartStore();
-    const { items } = storeToRefs(cartStore);
-
     return {
       menuOpen: false, // Controls visibility of the mobile menu
       cartOpen: false, // Controls visibility of the cart sidebar
-      items, // Cart items for badge count
     };
   },
   computed: {
-    // Calculate total number of items in cart for badge
-    cartItemCount(): number {
-      return this.items.reduce((sum, item) => sum + item.quantity, 0);
-    },
+    // Map Vuex getters to computed properties
+    ...mapGetters("cart", ["itemCount"]),
   },
   methods: {
     // Toggle the mobile menu open/closed
