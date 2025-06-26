@@ -8,6 +8,8 @@
   <div class="products">
     <!-- Page title -->
     <h1 class="products__title">Products</h1>
+    <!-- Sort dropdown for products -->
+    <SortDropdown class="products__sort" @sort-changed="sortProducts" />
     <!-- Responsive grid of product cards -->
     <div class="products__grid">
       <!--
@@ -18,7 +20,7 @@
         ProductCard now handles add-to-cart directly via Vuex actions.
       -->
       <ProductCard
-        v-for="product in items"
+        v-for="product in sortedProducts"
         :key="product.id"
         :product="product"
         @click="goToProduct(product.id)"
@@ -34,18 +36,54 @@ import { defineComponent } from "vue";
 import { mapState, mapActions } from "vuex";
 // Import the ProductCard component for displaying each product
 import ProductCard from "../components/ProductCard.vue";
+import SortDropdown from "../components/SortDropdown.vue";
 
 export default defineComponent({
   name: "ProductsPage", // Name of the page component
-  components: { ProductCard }, // Register ProductCard as a child component
+  components: { ProductCard, SortDropdown }, // Register ProductCard and SortDropdown as child components
+
+  data() {
+    return {
+      currentSort: "", // Track current sort option
+    };
+  },
+
   computed: {
     // Map Vuex state to computed properties for products
     ...mapState("products", ["items"]),
+
+    // Computed property for sorted products (simplest approach)
+    sortedProducts() {
+      if (!this.currentSort || !this.items.length) {
+        return this.items; // Return original array if no sort or no items
+      }
+
+      // Create a copy to avoid mutating original array
+      const products = [...this.items];
+
+      switch (this.currentSort) {
+        case "price-low-high":
+          return products.sort((a, b) => a.price - b.price);
+        case "price-high-low":
+          return products.sort((a, b) => b.price - a.price);
+        case "rating-low-high":
+          return products.sort((a, b) => a.rating.rate - b.rating.rate);
+        case "rating-high-low":
+          return products.sort((a, b) => b.rating.rate - a.rating.rate);
+        default:
+          return products;
+      }
+    },
   },
 
   methods: {
     // Map Vuex actions to component methods
     ...mapActions("products", ["fetchProducts"]), // Maps to this.$store.dispatch('products/fetchProducts')
+
+    // Handle sort change from dropdown (simplest approach)
+    sortProducts(sortOption: string) {
+      this.currentSort = sortOption; // Update data property, computed will react
+    },
 
     // Navigate to the product details page for the given product id
     // ProductCard now handles add-to-cart directly via Vuex actions
@@ -71,6 +109,12 @@ export default defineComponent({
   &__title {
     text-align: center; // Center the page title
     margin-bottom: 2rem; // Space below the title
+  }
+
+  &__sort {
+    margin-bottom: 1.5rem; // Space below the sort dropdown
+    display: flex; // Use flexbox for layout
+    justify-content: flex-end; // Align to the right
   }
 
   &__grid {

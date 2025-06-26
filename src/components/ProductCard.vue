@@ -8,6 +8,15 @@
     <img :src="product.image" alt="Product Image" class="product-card__image" />
     <!-- Product title -->
     <h2 class="product-card__title">{{ product.title }}</h2>
+    <!-- Product rating -->
+    <div class="product-card__rating">
+      <span class="product-card__rating-stars">
+        {{ filledStars }}{{ emptyStars }}
+      </span>
+      <span class="product-card__rating-text">
+        {{ product.rating.rate.toFixed(1) }} ({{ product.rating.count }})
+      </span>
+    </div>
     <!-- Product price -->
     <p class="product-card__price">${{ product.price.toFixed(2) }}</p>
     <!-- Add to Cart button (calls Vuex action directly) -->
@@ -31,6 +40,21 @@ export default {
       required: true,
     },
   },
+  
+  computed: {
+    // Calculate filled stars based on rating
+    filledStars() {
+      const rating = Math.round(this.product.rating.rate);
+      return '★'.repeat(rating);
+    },
+    
+    // Calculate empty stars
+    emptyStars() {
+      const rating = Math.round(this.product.rating.rate);
+      return '☆'.repeat(5 - rating);
+    },
+  },
+  
   methods: {
     // Map Vuex actions from cart module to component methods (using namespace)
     ...mapActions("cart", ["addToCart"]),
@@ -67,6 +91,28 @@ export default {
     width: 100%; // Ensures ellipsis works for long titles
     display: block;
   }
+  
+  &__rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    
+    &-stars {
+      color: #ffc107; // Gold color for filled stars
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+    
+    &-text {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+    }
+  }
+  
   &__description {
     font-size: 1rem;
     margin-bottom: 0.5rem;
